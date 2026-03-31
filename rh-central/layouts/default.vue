@@ -11,6 +11,10 @@
 
       <div class="header-right">
         <span class="header-date">{{ headerDate }}</span>
+        <div class="user-menu">
+          <span class="user-name">{{ authStore.user?.full_name }}</span>
+          <button class="btn-logout" @click="handleLogout" title="Logout">🚪</button>
+        </div>
       </div>
     </header>
 
@@ -23,6 +27,12 @@
         <NuxtLink to="/processos" class="sidebar-item" active-class="active">
           <span class="sidebar-icon">⚖️</span>
           <span>Processos Trabalhistas</span>
+        </NuxtLink>
+
+        <!-- Módulo: Usuários (apenas admin) -->
+        <NuxtLink v-if="authStore.isAdmin" to="/usuarios" class="sidebar-item" active-class="active">
+          <span class="sidebar-icon">👥</span>
+          <span>Usuários</span>
         </NuxtLink>
 
         <!--
@@ -87,8 +97,19 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from '~/stores/auth'
+
+defineRouteMiddleware('auth')
+
+const router = useRouter()
 const { getHeaderDate } = useHelpers()
 const headerDate = getHeaderDate()
+const authStore = useAuthStore()
+
+const handleLogout = async () => {
+  await authStore.signOut()
+  await router.push('/auth/login')
+}
 </script>
 
 <style scoped>
@@ -144,13 +165,49 @@ const headerDate = getHeaderDate()
   letter-spacing: 1px;
 }
 
-.header-right { display: flex; align-items: center; gap: 16px; }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
 
 .header-date {
   font-family: 'DM Mono', monospace;
   font-size: 11px;
   color: var(--text3);
   letter-spacing: 0.5px;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 16px;
+  border-left: 1px solid var(--border);
+}
+
+.user-name {
+  font-size: 12px;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-logout {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.btn-logout:hover {
+  background: var(--surface2);
 }
 
 /* ── SIDEBAR ── */

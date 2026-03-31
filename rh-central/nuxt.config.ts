@@ -8,6 +8,13 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  runtimeConfig: {
+    public: {
+      supabaseUrl: process.env.VITE_SUPABASE_URL,
+      supabaseAnonKey: process.env.VITE_SUPABASE_SUPABASE_ANON_KEY,
+    },
+  },
+
   app: {
     head: {
       title: 'RH Central',
