@@ -3,36 +3,44 @@
     <div class="page-header">
       <div>
         <div class="page-title">Processos</div>
-        <div class="page-sub">GESTÃO E ACOMPANHAMENTO</div>
+        <div class="page-sub">Gestão e Acompanhamento</div>
       </div>
     </div>
 
-    <!-- ── FILTROS ──────────────────────────── -->
-    <div class="filters-row">
-      <input
-        v-model="q"
-        type="text"
-        placeholder="Buscar por nome, número, cargo..."
-        style="max-width:300px"
-      />
-      <select v-model="filterStatus">
+    <!-- ── FILTROS — Glass Filter Bar ────── -->
+    <div class="filters-bar">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          v-model="q"
+          type="text"
+          placeholder="Buscar por nome, número, cargo..."
+          class="search-input"
+        />
+      </div>
+
+      <select v-model="filterStatus" class="filter-select">
         <option value="">Todos os status</option>
         <option>Em andamento</option>
         <option>Aguardando audiência</option>
         <option>Suspenso</option>
         <option>Concluído</option>
       </select>
-      <select v-model="filterResultado">
+
+      <select v-model="filterResultado" class="filter-select">
         <option value="">Todos os resultados</option>
         <option>Procedente</option>
         <option>Improcedente</option>
         <option>Parcialmente procedente</option>
         <option>Pendente</option>
       </select>
-      <span class="count-badge">{{ filtered.length }} processo(s)</span>
+
+      <span class="count-label">{{ filtered.length }} processo(s)</span>
     </div>
 
-    <!-- ── TABLE ────────────────────────────── -->
+    <!-- ── TABLE ─────────────────────────── -->
     <div class="card" style="padding:0;overflow:hidden;">
       <div class="table-wrap">
         <table>
@@ -46,7 +54,7 @@
               <th>Próx. Audiência</th>
               <th>Status</th>
               <th>Resultado</th>
-              <th>Ações</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -63,13 +71,13 @@
               <td class="td-primary">{{ p.nome }}</td>
               <td>{{ p.cargo }}</td>
               <td>{{ p.cc }}</td>
-              <td style="font-family:'DM Mono',monospace;font-size:11px">{{ fmtDate(p.inicio) }}</td>
-              <td style="font-family:'DM Mono',monospace;font-size:11px">
+              <td style="font-family:'Inter',sans-serif;font-size:0.8125rem">{{ fmtDate(p.inicio) }}</td>
+              <td style="font-family:'Inter',sans-serif;font-size:0.8125rem">
                 <span v-if="p.audiencia_data">
                   {{ fmtDate(p.audiencia_data) }}
-                  <span v-if="p.audiencia_hora"> {{ p.audiencia_hora }}</span>
+                  <span v-if="p.audiencia_hora" style="color:var(--on-surface-variant)"> {{ p.audiencia_hora }}</span>
                 </span>
-                <span v-else style="color:var(--text3)">—</span>
+                <span v-else style="color:var(--outline-variant)">—</span>
               </td>
               <td>
                 <span class="badge" :class="getStatusClass(p.status)">{{ p.status }}</span>
@@ -78,7 +86,12 @@
                 <span class="badge" :class="getResultadoClass(p.resultado)">{{ p.resultado }}</span>
               </td>
               <td>
-                <NuxtLink :to="`/processos/${p.id}`" class="btn btn-sm">Ver</NuxtLink>
+                <NuxtLink :to="`/processos/${p.id}`" class="btn btn-sm btn-secondary">
+                  Ver
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
+                  </svg>
+                </NuxtLink>
               </td>
             </tr>
           </tbody>
@@ -104,19 +117,52 @@ const filtered = computed(() =>
 </script>
 
 <style scoped>
-.filters-row {
+.filters-bar {
   display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 0.625rem;
+  margin-bottom: 1.25rem;
   flex-wrap: wrap;
   align-items: center;
+  background: rgba(248, 249, 250, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  outline: 1px solid var(--outline-variant);
 }
 
-.count-badge {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  color: var(--text3);
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--on-surface-variant);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding-left: 2.25rem;
+}
+
+.filter-select {
+  width: auto;
+  flex-shrink: 0;
+}
+
+.count-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: var(--on-surface-variant);
   margin-left: auto;
-  letter-spacing: 0.5px;
+  white-space: nowrap;
+  font-weight: 500;
 }
 </style>

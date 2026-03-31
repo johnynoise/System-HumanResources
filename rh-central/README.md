@@ -1,28 +1,22 @@
 # RH Central
 
-Sistema central de RH modular construído com **Nuxt 3** + **Pinia** + **Supabase**.
+Sistema central de RH modular construído com **Nuxt 3** + **Pinia** + **localStorage**.
 
-## Funcionalidades
+## Módulos
 
-### ⚖️ Processos Trabalhistas (v1.0)
-- ✅ Cadastro, edição e exclusão de processos
-- ✅ Dashboard com KPIs e gráficos
-- ✅ Acompanhamento com filtros avançados
-- ✅ Histórico de alterações
-- ✅ Exportação de dados (CSV)
-- 🔜 Upload e anexação de documentos
-
-### 👥 Autenticação e Controle de Acesso (v1.0)
-- ✅ Login/Logout
-- ✅ Cadastro de usuários
-- ✅ Controle de papéis (Admin, Gestor, Analista)
-- ✅ Persistência segura em Supabase
+| Módulo | Status |
+|---|---|
+| ⚖️ Processos Trabalhistas | ✅ Disponível |
+| 🎯 Recrutamento & Seleção | 🔜 Em breve |
+| 💰 Folha de Pagamento | 🔜 Em breve |
+| 📚 Treinamentos | 🔜 Em breve |
+| 🏥 Benefícios | 🔜 Em breve |
 
 ## Stack
 
-- **Nuxt 3** — framework Vue com file-based routing
+- **Nuxt 3** — framework Vue com file-based routing e SSR opcional
 - **Pinia** — gerenciamento de estado tipado
-- **Supabase** — autenticação, banco de dados e armazenamento
+- **localStorage** — persistência sem servidor (substituível por Supabase/API futuramente)
 - **TypeScript** — tipos para todo o domínio de RH
 
 ## Estrutura
@@ -30,44 +24,32 @@ Sistema central de RH modular construído com **Nuxt 3** + **Pinia** + **Supabas
 ```
 rh-central/
 ├── assets/css/          # Design tokens e estilos globais
+├── composables/
+│   ├── useHelpers.ts    # Formatação, badges, utilitários
+│   └── useToast.ts      # Notificações globais
+├── layouts/
+│   └── default.vue      # Shell: header + sidebar + main
+├── pages/
+│   ├── index.vue        # Redirect para /processos
+│   ├── processos.vue    # Sub-nav do módulo
+│   └── processos/
+│       ├── index.vue    # Dashboard (KPIs + gráficos)
+│       ├── lista.vue    # Tabela com filtros
+│       ├── novo.vue     # Formulário de cadastro
+│       ├── [id].vue     # Detalhes + histórico
+│       └── [id]/
+│           └── editar.vue  # Edição
 ├── components/
 │   ├── AppToast.vue
-│   ├── DocumentUpload.vue  # Upload de arquivos
 │   └── processos/
 │       ├── ProcessosForm.vue
 │       ├── ProcessosDonutChart.vue
 │       ├── ProcessosBarChart.vue
 │       └── ProcessosDetailField.vue
-├── composables/
-│   ├── useHelpers.ts    # Formatação, badges, utilitários
-│   └── useToast.ts      # Notificações globais
-├── layouts/
-│   ├── auth.vue         # Login/Register (sem sidebar)
-│   └── default.vue      # Shell autenticado: header + sidebar + main
-├── lib/
-│   └── supabase.ts      # Cliente Supabase
-├── middleware/
-│   └── auth.ts          # Proteção de rotas e autenticação
-├── pages/
-│   ├── index.vue        # Redirect para /processos
-│   ├── auth/
-│   │   ├── login.vue
-│   │   └── register.vue
-│   ├── usuarios/
-│   │   └── index.vue    # Gestão de usuários (admin)
-│   ├── processos.vue    # Sub-nav do módulo
-│   └── processos/
-│       ├── index.vue    # Dashboard
-│       ├── lista.vue    # Listagem com filtros
-│       ├── novo.vue     # Cadastro
-│       ├── [id].vue     # Detalhes + histórico
-│       └── [id]/
-│           └── editar.vue  # Edição
 ├── stores/
-│   ├── auth.ts          # Autenticação com Supabase
-│   └── processos.ts     # Processos trabalhistas
+│   └── processos.ts     # Pinia store com CRUD + KPIs + filtros
 ├── types/
-│   └── index.ts         # Interfaces TypeScript
+│   └── index.ts         # Interfaces TypeScript do domínio
 └── nuxt.config.ts
 ```
 
@@ -77,27 +59,15 @@ rh-central/
 # Instalar dependências
 npm install
 
-# Variáveis de ambiente (verificar .env)
-# VITE_SUPABASE_URL=https://...
-# VITE_SUPABASE_SUPABASE_ANON_KEY=...
-
 # Rodar em desenvolvimento
 npm run dev
 
 # Build para produção
 npm run build
 
-# Preview build local
-npm run preview
+# Gerar site estático (recomendado para uso interno)
+npm run generate
 ```
-
-## Primeiro Acesso
-
-1. Ir para `/auth/register` e criar uma conta
-2. Fazer login em `/auth/login`
-3. Dashboard de processos em `/processos`
-
-**Nota:** O primeiro usuário registrado pode ser promovido a admin no Supabase (RLS permite).
 
 ## Adicionando um novo módulo de RH
 
@@ -107,31 +77,21 @@ npm run preview
 4. Crie os componentes em `components/nome-modulo/`
 5. Adicione o link no sidebar em `layouts/default.vue`
 
-## Próximas Fases
+## Migrar para banco de dados
 
-- [ ] Upload e anexação de documentos (Supabase Storage)
-- [ ] Integração com calendário de audiências
-- [ ] Notificações de prazos
-- [ ] Relatórios gerenciais em PDF
-- [ ] Recrutamento & Seleção
-- [ ] Folha de Pagamento
-
-## Segurança
-
-- Autenticação com Supabase Auth
-- Row-Level Security (RLS) em todas as tabelas
-- Senhas criptografadas
-- Controle de acesso baseado em papéis
-- Sem exposição de dados sensíveis
+O projeto usa `localStorage` para simplicidade. Para migrar para Supabase ou outra API:
+- Substitua os métodos `load()` e `persist()` da store por chamadas `$fetch` ao servidor
+- Crie as rotas de API em `server/api/`
+- O restante do código permanece intacto
 
 ## Deploy
 
 ```bash
-# Build SSR com Node
+# Build estático (hospedagem simples: Netlify, Vercel, Nginx)
+npm run generate
+# Resultado em: dist/
+
+# Ou SSR com Node
 npm run build
 node .output/server/index.mjs
-
-# Ou em plataforma serverless (Vercel, Netlify, etc)
-npm run build
-# Deploy pasta .output/
 ```

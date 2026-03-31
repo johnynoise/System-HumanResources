@@ -1,8 +1,10 @@
 <template>
   <div>
-    <!-- ── DADOS DO PROCESSO ─────────────────── -->
+    <!-- ── DADOS DO PROCESSO ──────────────── -->
     <div class="card">
-      <div class="card-title">Dados do Processo</div>
+      <div class="card-header">
+        <div class="card-title">Dados do Processo</div>
+      </div>
       <div class="form-grid">
         <div class="form-group">
           <label>Número do Processo *</label>
@@ -33,9 +35,11 @@
       </div>
     </div>
 
-    <!-- ── DADOS DO FUNCIONÁRIO ──────────────── -->
+    <!-- ── DADOS DO FUNCIONÁRIO ───────────── -->
     <div class="card">
-      <div class="card-title">Dados do Funcionário</div>
+      <div class="card-header">
+        <div class="card-title">Dados do Funcionário</div>
+      </div>
       <div class="form-grid">
         <div class="form-group">
           <label>Nome do Funcionário *</label>
@@ -68,9 +72,11 @@
       </div>
     </div>
 
-    <!-- ── DATAS E AUDIÊNCIAS ─────────────────── -->
+    <!-- ── DATAS E AUDIÊNCIAS ─────────────── -->
     <div class="card">
-      <div class="card-title">Datas e Audiências</div>
+      <div class="card-header">
+        <div class="card-title">Datas e Audiências</div>
+      </div>
       <div class="form-grid">
         <div class="form-group">
           <label>Data de Início do Processo *</label>
@@ -99,9 +105,11 @@
       </div>
     </div>
 
-    <!-- ── OBSERVAÇÕES ───────────────────────── -->
+    <!-- ── OBSERVAÇÕES ───────────────────── -->
     <div class="card">
-      <div class="card-title">Observações</div>
+      <div class="card-header">
+        <div class="card-title">Observações</div>
+      </div>
       <div class="form-group">
         <label>Descrição / Pedidos</label>
         <textarea
@@ -112,14 +120,19 @@
       </div>
     </div>
 
-    <!-- ── ERRO ─────────────────────────────── -->
+    <!-- ── ERRO ──────────────────────────── -->
     <div v-if="error" class="error-msg">{{ error }}</div>
 
-    <!-- ── AÇÕES ─────────────────────────────── -->
-    <div style="display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap">
-      <button class="btn btn-primary" @click="handleSubmit">✓ Salvar Processo</button>
-      <button class="btn" @click="resetForm">Limpar</button>
-      <NuxtLink to="/processos/lista" class="btn">Cancelar</NuxtLink>
+    <!-- ── AÇÕES ─────────────────────────── -->
+    <div style="display:flex;gap:0.75rem;margin-bottom:2rem;flex-wrap:wrap">
+      <button class="btn btn-primary" @click="handleSubmit">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Salvar Processo
+      </button>
+      <button class="btn btn-secondary" @click="resetForm">Limpar</button>
+      <NuxtLink to="/processos/lista" class="btn btn-secondary">Cancelar</NuxtLink>
     </div>
   </div>
 </template>
@@ -127,80 +140,38 @@
 <script setup lang="ts">
 import type { Processo, StatusProcesso, ResultadoProcesso } from '~/types'
 
-const props = defineProps<{
-  initial?: Processo
-}>()
-
-const emit = defineEmits<{
-  saved: []
-}>()
+const props = defineProps<{ initial?: Processo }>()
+const emit = defineEmits<{ saved: [] }>()
 
 const store = useProcessosStore()
 const error = ref('')
 
-// ── Estado do formulário ───────────────────
 const defaultForm = () => ({
-  numero: '',
-  status: 'Em andamento' as StatusProcesso,
-  resultado: 'Pendente' as ResultadoProcesso,
-  valor: 0,
-  nome: '',
-  cpf: '',
-  matricula: '',
-  cargo: '',
-  cc: '',
-  admissao: '',
-  demissao: '',
-  inicio: '',
-  fim: '',
-  audiencia_data: '',
-  audiencia_hora: '',
-  vara: '',
-  advogado: '',
-  descricao: '',
+  numero: '', status: 'Em andamento' as StatusProcesso,
+  resultado: 'Pendente' as ResultadoProcesso, valor: 0,
+  nome: '', cpf: '', matricula: '', cargo: '', cc: '',
+  admissao: '', demissao: '', inicio: '', fim: '',
+  audiencia_data: '', audiencia_hora: '', vara: '',
+  advogado: '', descricao: '',
 })
 
 const form = reactive(defaultForm())
 
-// Preenche com valores iniciais (modo edição)
-onMounted(() => {
-  if (props.initial) {
-    Object.assign(form, props.initial)
-  }
-})
+onMounted(() => { if (props.initial) Object.assign(form, props.initial) })
 
-function resetForm() {
-  Object.assign(form, defaultForm())
-}
+function resetForm() { Object.assign(form, defaultForm()) }
 
-// ── Submit ────────────────────────────────
 function handleSubmit() {
   error.value = ''
   if (!form.numero || !form.nome || !form.cargo || !form.cc || !form.inicio) {
     error.value = 'Preencha os campos obrigatórios: Número, Funcionário, Cargo, Centro de Custo e Data de Início.'
     return
   }
-
   if (props.initial?.id) {
     store.update(props.initial.id, { ...form })
   } else {
     store.add({ ...form })
   }
-
   emit('saved')
 }
 </script>
-
-<style scoped>
-.error-msg {
-  background: var(--red-dim);
-  border: 1px solid var(--red);
-  color: var(--red);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  padding: 12px 16px;
-  border-radius: var(--radius);
-  margin-bottom: 16px;
-  letter-spacing: 0.3px;
-}
-</style>

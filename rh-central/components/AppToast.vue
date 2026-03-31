@@ -1,6 +1,7 @@
 <template>
   <Teleport to="body">
     <div class="toast" :class="{ show: visible }">
+      <span class="toast-dot"></span>
       {{ message }}
     </div>
   </Teleport>
@@ -13,25 +14,37 @@ const { message, visible } = useToast()
 <style scoped>
 .toast {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: var(--accent);
-  color: #000;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  padding: 12px 18px;
-  border-radius: var(--radius);
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: var(--primary);
+  color: rgba(255, 255, 255, 0.95);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.75rem 1.125rem;
+  border-radius: var(--radius-lg);
   opacity: 0;
-  transform: translateY(8px);
-  transition: all 0.25s;
+  transform: translateY(0.5rem);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
   z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-float);
 }
+
 .toast.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+.toast-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--tertiary-fixed-dim);
+  flex-shrink: 0;
 }
 </style>

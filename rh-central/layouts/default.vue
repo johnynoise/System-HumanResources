@@ -99,8 +99,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 
-defineRouteMiddleware('auth')
-
 const router = useRouter()
 const { getHeaderDate } = useHelpers()
 const headerDate = getHeaderDate()
