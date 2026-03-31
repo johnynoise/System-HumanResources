@@ -11,7 +11,6 @@
           :style="{ width: pct(val) + '%', background: color }"
         />
       </div>
-      <div class="chart-bar-val">{{ val }}</div>
     </div>
   </div>
 </template>

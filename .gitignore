@@ -1,2 +1,23 @@
-node_modules/
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node
+node_modules
+
+# Logs
+logs
+*.log
+
+# Env
 .env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db

@@ -66,24 +66,7 @@
         -->
       </div>
 
-      <div class="sidebar-section sidebar-bottom">
-        <div class="sidebar-label">EM BREVE</div>
-        <div class="sidebar-item disabled">
-          <span class="sidebar-icon">🎯</span>
-          <span>Recrutamento</span>
-          <span class="soon-badge">SOON</span>
-        </div>
-        <div class="sidebar-item disabled">
-          <span class="sidebar-icon">💰</span>
-          <span>Folha de Pagamento</span>
-          <span class="soon-badge">SOON</span>
-        </div>
-        <div class="sidebar-item disabled">
-          <span class="sidebar-icon">📚</span>
-          <span>Treinamentos</span>
-          <span class="soon-badge">SOON</span>
-        </div>
-      </div>
+      
     </aside>
 
     <!-- ── MAIN CONTENT ───────────────────── -->

@@ -45,15 +45,6 @@
         <div class="kpi-value info" style="font-size:2rem">{{ kpis.avgDuracao }}d</div>
         <div class="kpi-sub">dias por processo</div>
       </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Valor Total em Causa</div>
-        <div class="kpi-value" style="font-size:1.625rem">
-          {{ kpis.valorTotal > 0 ? fmtCurrencyShort(kpis.valorTotal) : '—' }}
-        </div>
-        <div class="kpi-sub">
-          {{ kpis.valorTotal > 0 ? fmtCurrency(kpis.valorTotal) : 'sem valores cadastrados' }}
-        </div>
-      </div>
     </div>
 
     <!-- ── CHARTS ROW 1 ──────────────────── -->
